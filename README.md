@@ -1,98 +1,250 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Web Scraper API - NestJS
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A RESTful API built with NestJS that scrapes web pages and extracts structured data including titles, headings, paragraphs, and links. The scraped data can be saved to a local JSON file.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Features
 
-## Description
+- **Web Scraping**: Extract structured data from any webpage
+- **Data Extraction**: Captures titles, headings (h1-h6), paragraphs, and links
+- **File Storage**: Automatically saves scraped data to a JSON file
+- **Error Handling**: Robust error handling for invalid URLs and network issues
+- **Clean Architecture**: Built with NestJS modular structure
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🛠️ Tech Stack
 
-## Project setup
+- **Framework**: NestJS
+- **HTTP Client**: Axios
+- **HTML Parser**: Cheerio
+- **Runtime**: Node.js
+- **Language**: TypeScript
 
-```bash
-$ npm install
+## 📋 Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+- NestJS CLI (optional): `npm install -g @nestjs/cli`
+
+## 🔧 Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <your-repository-url>
+   cd web-scraper
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run start:dev
+   ```
+
+4. **Verify the application is running**
+   ```
+   Application should be running on http://localhost:3000
+   ```
+
+## 📚 API Documentation
+
+### Endpoint
+
+**POST** `/scraper/scrape`
+
+Scrapes a webpage and saves the extracted data to a local JSON file.
+
+#### Request
+
+- **Method**: POST
+- **URL**: `http://localhost:3000/scraper/scrape`
+- **Content-Type**: `application/json`
+
+#### Request Body
+
+```json
+{
+  "url": "https://example.com"
+}
 ```
 
-## Compile and run the project
+#### Response
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```json
+{
+  "message": "Data successfully written to scraped-data.json",
+  "filePath": "/path/to/your/project/scraped-data.json"
+}
 ```
 
-## Run tests
+#### Error Responses
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+**400 Bad Request** - Missing or invalid URL
+```json
+{
+  "statusCode": 400,
+  "message": "URL is required in request body"
+}
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+**502 Bad Gateway** - Failed to fetch webpage
+```json
+{
+  "statusCode": 502,
+  "message": "Failed to fetch URL https://example.com: Network Error"
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 📁 Output File Structure
 
-## Resources
+The scraped data is saved to `scraped-data.json` in the project root with the following structure:
 
-Check out a few resources that may come in handy when working with NestJS:
+```json
+{
+  "title": "Page Title",
+  "headings": [
+    "Main Heading",
+    "Subheading 1",
+    "Subheading 2"
+  ],
+  "paragraphs": [
+    "First paragraph content...",
+    "Second paragraph content..."
+  ],
+  "links": [
+    {
+      "href": "https://example.com/link1",
+      "text": "Link Text 1"
+    },
+    {
+      "href": "https://example.com/link2",
+      "text": "Link Text 2"
+    }
+  ]
+}
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 🧪 Testing
 
-## Support
+### Using Postman
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+1. **Set up the request**:
+   - Method: `POST`
+   - URL: `http://localhost:3000/scraper/scrape`
+   - Headers: `Content-Type: application/json`
+   - Body:
+     ```json
+     {
+       "url": "https://example.com"
+     }
+     ```
 
-## Stay in touch
+2. **Send the request** and verify:
+   - You receive a success response
+   - A `scraped-data.json` file is created in the project root
+   - The file contains the extracted data
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Using cURL
 
-## License
+```bash
+curl -X POST http://localhost:3000/scraper/scrape \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com"}'
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Running Unit Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:cov
+```
+
+## 📂 Project Structure
+
+```
+src/
+├── main.ts                 # Application entry point
+├── app.module.ts           # Root module
+└── scraper/
+    ├── scraper.controller.ts  # API endpoint controller
+    ├── scraper.service.ts     # Business logic service
+    ├── scraper.service.spec.ts # Unit tests
+    └── scraper.module.ts      # Scraper module
+```
+
+## 🔍 What Gets Scraped
+
+The scraper extracts the following elements from web pages:
+
+- **Title**: The `<title>` tag content
+- **Headings**: All heading tags (h1, h2, h3, h4, h5, h6)
+- **Paragraphs**: All `<p>` tag content
+- **Links**: All `<a>` tags with href attributes (both URL and link text)
+
+## ⚠️ Limitations
+
+- **Static Content Only**: Works best with server-side rendered HTML
+- **JavaScript-Heavy Sites**: May not capture content loaded dynamically with JavaScript
+- **Rate Limiting**: Some websites may block automated requests
+- **Authentication**: Cannot scrape login-protected content
+- **Anti-Bot Protection**: Sites with Cloudflare or similar protection may block requests
+
+## 📜 Available Scripts
+
+```bash
+# Development
+npm run start:dev          # Start in development mode with hot reload
+npm run start:debug        # Start in debug mode
+
+# Production
+npm run build              # Build the application
+npm run start:prod         # Start in production mode
+
+# Testing
+npm run test               # Run unit tests
+npm run test:watch         # Run tests in watch mode
+npm run test:cov           # Run tests with coverage
+npm run test:e2e           # Run end-to-end tests
+
+# Code Quality
+npm run lint               # Run ESLint
+npm run format             # Format code with Prettier
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin feature-name`
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the UNLICENSED License.
+
+## 🆘 Support
+
+If you encounter any issues or have questions:
+
+1. Check the console logs for error details
+2. Verify the target URL is accessible
+3. Ensure the URL format is valid (includes http:// or https://)
+4. Test with a simple website like `https://example.com` first
+
+## 📈 Future Enhancements
+
+- [ ] Add support for custom selectors
+- [ ] Implement rate limiting
+- [ ] Add data export in multiple formats (CSV, XML)
+- [ ] Support for authentication
+- [ ] Batch URL processing
+- [ ] Image extraction
+- [ ] Custom headers and user agents
