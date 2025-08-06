@@ -1,15 +1,26 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: process.env.LOG_LEVEL === 'debug' 
+      ? ['error', 'warn', 'log', 'debug', 'verbose'] 
+      : ['error', 'warn', 'log'],
+  });
   
-  await app.listen(process.env.PORT ?? 3000);
-  console.log('Application is running on http://localhost:3000');
-  console.log('API Endpoint:');
-  console.log('- POST /scraper/scrape');
-  console.log('  Body: { "url": "https://example.com" }');
-  console.log('');
-  console.log('File saved to: ' + process.cwd() + '\\scraped-data.json');
+  // Enable trust proxy for proper IP detection
+  app.getHttpAdapter().getInstance().set('trust proxy', true);
+  
+  const configService = app.get(ConfigService);
+  const port = configService.get<number>('port') || 3001;
+  
+  await app.listen(port);
+  
+  const logger = new Logger('Bootstrap');
+  logger.log(`🚀 Application is running on: http://localhost:${port}`);
+  logger.log(`📡 API Endpoint: POST http://localhost:${port}/scraper/scrape`);
+  logger.log(`📝 Log Level: ${process.env.LOG_LEVEL || 'log'}`);
 }
 bootstrap();
