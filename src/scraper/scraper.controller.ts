@@ -1,12 +1,16 @@
-import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
+import { Body, Post, Get, Controller, UsePipes, ValidationPipe, BadRequestException } from '@nestjs/common';
 import { ScraperService } from './scraper.service';
+import { ScrapeDto } from './dto/scrape.dto';
 
 @Controller('scraper')
 export class ScraperController {
   constructor(private readonly scraperService: ScraperService) {}
 
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Post('scrape')
-  async scrapePost(@Body('url') url: string): Promise<{ message: string; filePath: string }> {
+  async scrapePost(@Body() dto: ScrapeDto): Promise<{ message: string; filePath: string }> {
+    const { url } = dto;
+
     if (!url) {
       throw new BadRequestException('URL is required in request body');
     }
@@ -20,4 +24,8 @@ export class ScraperController {
 
     return await this.scraperService.scrapeAndSave(url);
   }
+  @Get('health')
+getHealth() {
+  return { status: 'ok', uptime: process.uptime() };
+}
 }
